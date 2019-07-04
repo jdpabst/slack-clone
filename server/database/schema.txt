@@ -1,0 +1,49 @@
+-- create table users (
+--     id SERIAL primary key,
+--     username varchar(255),
+--     password varchar(255)
+-- )
+
+-- insert into users 
+-- (username, password)
+-- values('testUsername', 'testPassword')
+
+-- select * from users
+
+-- create table groups (
+--     id SERIAL primary key,
+--     name varchar(255)
+-- )
+
+-- insert into groups
+-- (name)
+-- values('testGroupName')
+
+-- select * from groups
+
+-- create table groups_users (
+--   groupId INTEGER REFERENCES groups(id) not null,
+--   userId INTEGER REFERENCES users(id) not null
+-- )
+
+-- insert into groups_users
+-- (groupId, userId)
+-- values(1,1)
+
+-- select * from groups_users
+
+-- create table messages(
+--   id SERIAL primary key,
+--   message text,
+--   type varchar(255),
+--   userid INTEGER REFERENCES users(id) default null,
+--   groupid INTEGER REFERENCES groups(id) default null
+-- )
+
+-- insert into messages
+-- (message, type, userid)
+-- values('messagetest', 'DIRECT', 1)
+-- -- (message, type, groupid)
+-- -- values('message2test', 'GROUP', 1)
+
+-- select * from messages
