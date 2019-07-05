@@ -1,21 +1,14 @@
-const {promisify} = require('util')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-function hashPassword(password){
-    return password;
-    // bcrypt.hash(password, saltRounds, (err, hash) => {
-    //     console.log('inside cb function');
-    //     console.log(hash);
-    //     return hash;
-    // })
+function hashPassword(password) {
+    const hash = bcrypt.hashSync(password, saltRounds);
+    return hash;
 }
 
-function comparePasswordToHash(password, hash){
-    return true;
-    // bcrypt.compare(password, hash, function(err, res) {
-    //     return res;
-    // });
+function comparePasswordToHash(password, hash) {
+    const isTheSame = bcrypt.compareSync(password, hash);
+    return isTheSame;
 }
 
 module.exports = {
