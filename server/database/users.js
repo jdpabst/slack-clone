@@ -1,8 +1,8 @@
 
-function createUser(username, passwordHash){
+function createUser(db, username, passwordHash){
     return db.users.insert({username, passwordHash})
 }
 
 module.exports = {
-    creatUser
+    createUser
 }
