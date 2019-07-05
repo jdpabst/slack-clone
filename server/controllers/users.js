@@ -9,9 +9,9 @@ async function createUser(req, res, next) {
   const hash = helpers.hashPassword(newUser.password);
 
   // create user object
-  const newUser = await usersDb.createUser(db, newUser.username, hash);
+  const newDbUserObj = await usersDb.createUser(db, newUser.username, hash);
 
-  return newUser;
+  return res.status(200).send(newDbUserObj);
 }
 
 module.exports = {

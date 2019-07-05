@@ -2,7 +2,7 @@ const {promisify} = require('util')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-async function hashPassword(password){
+function hashPassword(password){
     return password;
     // bcrypt.hash(password, saltRounds, (err, hash) => {
     //     console.log('inside cb function');
