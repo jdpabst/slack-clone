@@ -1,6 +1,8 @@
+const { getDb } = require('./massive');
 
-function createUser(db, username, passwordHash){
-    return db.users.insert({username, password: passwordHash})
+async function createUser(username, passwordHash) {
+    const db = await getDb();
+    return db.users.insert({ username, password: passwordHash })
 }
 
 module.exports = {
