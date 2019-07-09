@@ -1,12 +1,19 @@
 const helpers = require('../helpers');
 
 describe("Helpers tests", () => {
-    test("hashes password correctly", () => {
+    test("Should hash a password and be able to compare it accurately to the right password", () => {
         const password = 'myPassword';
         const hash = helpers.hashPassword(password);
-        console.log('received resultf rom hash fnction')
-        console.log(hash);
-        expect(hash).toEqual('this should fail')
+      
+        // should return something other than the password
+        expect(hash).not.toEqual(password);
+
+        // should be able to tell if it's the right password
+        const correctPasswordShouldReturnTrue = helpers.comparePasswordToHash(password, hash);
+        expect(correctPasswordShouldReturnTrue).toEqual(true);
+
+        const wrongPasswordShouldReturnFalse = helpers.comparePasswordToHash('wrongPasswordHere', hash);
+        expect(wrongPasswordShouldReturnFalse).toEqual(false);
     })
 })
 
