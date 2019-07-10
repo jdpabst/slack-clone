@@ -4,16 +4,18 @@ async function createUser(username, passwordHash) {
     const db = await getDb();
     return db.users.insert({ username, password: passwordHash })
 }
-function getAllUsers(db){
+async function getAllUsers(){
+    const db = await getDb();
     return db.users.find();
 }
 
-function signIn(db, id, username, passwordHash){
-    return db.users.findOne(id, {fields: [username, passwordHash]})
+async function getUserByUsernameAndPassword(username){
+    const db = await getDb();
+    return db.users.findOne({username})
 }
 
 module.exports = {
     createUser,
     getAllUsers,
-    signIn
+    getUserByUsernameAndPassword
 }

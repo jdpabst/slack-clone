@@ -1,34 +1,44 @@
 const helpers = require('../util/helpers');
 const usersDb = require('../database/users');
 
-async function createUser(req, res) {
-  const { newUser } = req.body;
-
+async function createUser(username, password) {
   // hash password
-  const hash = helpers.hashPassword(newUser.password);
+  const hash = helpers.hashPassword(password);
 
   // create user object
-  const newDbUserObj = await usersDb.createUser(newUser.username, hash);
+  const newDbUserObj = await usersDb.createUser(username, hash);
 
   // return the new object to the front end
-  return res.status(200).send(newDbUserObj);
+  return newDbUserObj;
 }
 
 async function getAllUsers(req, res, next){
-  const db = req.app.get('db');
-  console.log(db);
+  
+  const allUsers = await usersDb.getAllUsers();
 
-  // get all users from db
-  const allUsers = await usersDb.getAllUsers(db);
-  return res.status(200).send(allUsers);
+  const publicInfo = allUsers.map(user => {
+    return {
+      username: user.username
+    }
+  })
+  return res.status(200).send(publicInfo);
 }
 
 async function signIn(req, res, next){
-  const { user } = req.body
-  const db= req.app.get('db');
+  const { user } = req.body;
+  if(!user || !user.username || !user.password){
+    return res.status(400).send('Sign in request must include a "user" object with username and password')
+  }
+  const dbUser = await usersDb.getUserByUsernameAndPassword(user.username);
+  if(!dbUser){
+    return res.status(401).send('Invalid username or password');
+  }
 
-  const signedInUser = await usersDb.signIn(db, user.id, user.username, user.hashPassword);
-  return res.status(200).send(signedInUser)
+  const isCorrectPassword = helpers.comparePasswordToHash(user.password, dbUser.password);
+  if(!isCorrectPassword){
+    return res.status(401).send('Invalid username or password');
+  } 
+  return res.status(200).send(dbUser)
 }
 
 module.exports = {

@@ -22,7 +22,6 @@ describe('users controllers tests', () => {
 
     test('should return the matching user with correct username and password', () => {
         const userToLogin = {
-            id: 1,
             username: 'someUsername',
             password: 'somePassword'
         }
