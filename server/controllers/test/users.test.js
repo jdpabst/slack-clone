@@ -3,12 +3,12 @@ const usersController = require('../users');
 describe('users controllers tests', () => {
     // SHOULD RESET THE DATA AFTER TESTING - SEE UNIT_TESTING_AFTERNOON PROJECT FOR MORE INFO afterEach(() => {  
     // })
-    test('need a test', () => {
+    test('should create new user properly', async () => {
         const newUserFromFrontEnd = {
             username: 'someUsername999u234',
             password: 'somepassword99u2823423'
         };
-        const userFromDb = await usersController.createUser();
+        const userFromDb = await usersController.createUser(newUserFromFrontEnd.username, newUserFromFrontEnd.password);
 
         expect(userFromDb).toBeTruthy();
         expect(userFromDb.username).toEqual(newUserFromFrontEnd.username);
@@ -20,7 +20,7 @@ describe('users controllers tests', () => {
         expect(users).toBeTruthy();
     });
 
-    test('should return the matching user with correct username and password', () => {
+    test('should return the matching user with correct username and password', async () => {
         const userToLogin = {
             username: 'someUsername',
             password: 'somePassword'
