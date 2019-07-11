@@ -15,7 +15,7 @@ describe('users controllers tests', () => {
     });
 
     test('should return all user objects from the users table', () => {
-        const users = await usersController.getAllUsers();
+        const users = usersController.getAllUsers();
         
         expect(users).toBeTruthy();
     });
@@ -28,8 +28,8 @@ describe('users controllers tests', () => {
 
         // not sure how to add the test user to the db....
         const newUser = await usersController.createUser(userToLogin.username, userToLogin.password)
-        const userFromDb = await usersController.signIn()
-
+        const userFromDb = await usersController.signIn(newUser.username);
+        
         expect(userFromDb).toBeTruthy();
         expect(userFromDb.username).toEqual(userToLogin.username);
         expect(userFromDb.password).toEqual(userToLogin.password);
