@@ -1,19 +1,54 @@
 const helpers = require('../util/helpers');
 const usersDb = require('../database/users');
 
-async function createUser(req, res) {
-  const { newUser } = req.body;
-
+async function createUser(username, password) {
   // hash password
-  const hash = helpers.hashPassword(newUser.password);
+  const hash = helpers.hashPassword(password);
 
   // create user object
-  const newDbUserObj = await usersDb.createUser(newUser.username, hash);
+  const newDbUserObj = await usersDb.createUser(username, hash);
 
   // return the new object to the front end
-  return res.status(200).send(newDbUserObj);
+  return newDbUserObj;
+}
+
+async function getAllUsers(){
+  
+  const allUsers = await usersDb.getAllUsers();
+
+  const publicInfo = allUsers.map(user => {
+    return {
+      username: user.username
+    }
+  })
+  return publicInfo;
+}
+
+async function signIn(username, password){
+  const dbUser = await usersDb.getUserByUsername(username);
+
+  if(!dbUser){
+    throw Error('Invalid username or password');
+  }
+
+  const isCorrectPassword = helpers.comparePasswordToHash(password, dbUser.password);
+
+  if(!isCorrectPassword){
+    throw Error('Invalid username or password');
+  } 
+
+  // get JWT
+  const token = helpers.generateJwt(dbUser.id);
+
+  // return info 
+  return {
+    token,
+    user: dbUser
+  }
 }
 
 module.exports = {
-  createUser
-};
+  createUser,
+  getAllUsers,
+  signIn  
+}
