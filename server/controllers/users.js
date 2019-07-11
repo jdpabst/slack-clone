@@ -12,7 +12,7 @@ async function createUser(username, password) {
   return newDbUserObj;
 }
 
-async function getAllUsers(req, res, next){
+async function getAllUsers(){
   
   const allUsers = await usersDb.getAllUsers();
 
@@ -21,24 +21,30 @@ async function getAllUsers(req, res, next){
       username: user.username
     }
   })
-  return res.status(200).send(publicInfo);
+  return publicInfo;
 }
 
-async function signIn(req, res, next){
-  const { user } = req.body;
-  if(!user || !user.username || !user.password){
-    return res.status(400).send('Sign in request must include a "user" object with username and password')
-  }
-  const dbUser = await usersDb.getUserByUsernameAndPassword(user.username);
+async function signIn(username, password){
+  const dbUser = await usersDb.getUserByUsername(username);
+
   if(!dbUser){
-    return res.status(401).send('Invalid username or password');
+    throw Error('Invalid username or password');
   }
 
-  const isCorrectPassword = helpers.comparePasswordToHash(user.password, dbUser.password);
+  const isCorrectPassword = helpers.comparePasswordToHash(password, dbUser.password);
+
   if(!isCorrectPassword){
-    return res.status(401).send('Invalid username or password');
+    throw Error('Invalid username or password');
   } 
-  return res.status(200).send(dbUser)
+
+  // get JWT
+  const token = helpers.generateJwt(dbUser.id);
+
+  // return info 
+  return {
+    token,
+    user: dbUser
+  }
 }
 
 module.exports = {
