@@ -1,12 +1,14 @@
 const usersController = require('../users');
+const usersDb = require('../../database/users');
 
 describe('users controllers tests', () => {
     // SHOULD RESET THE DATA AFTER TESTING - SEE UNIT_TESTING_AFTERNOON PROJECT FOR MORE INFO afterEach(() => {  
     // })
     test('should create new user properly', async () => {
+        const random = Math.random();
         const newUserFromFrontEnd = {
-            username: 'someUsername999u234',
-            password: 'somepassword99u2823423'
+            username: 'someUsername' + random,
+            password: 'somepassword' + random
         };
         const userFromDb = await usersController.createUser(newUserFromFrontEnd.username, newUserFromFrontEnd.password);
 
@@ -25,14 +27,13 @@ describe('users controllers tests', () => {
             username: 'someUsername',
             password: 'somePassword'
         }
-
-        // not sure how to add the test user to the db....
-        const newUser = await usersController.createUser(userToLogin.username, userToLogin.password)
-        const userFromDb = await usersController.signIn(newUser.username);
-        
+        let userFromDb = await usersDb.getUserByUsername(userToLogin.username);
+        if(!userFromDb){
+            userFromDb = await usersController.createUser(userToLogin.username, userToLogin.password);
+        }
+        const userFromDbToSignIn = await usersController.signIn(userToLogin.username, userToLogin.password);
         expect(userFromDb).toBeTruthy();
-        expect(userFromDb.username).toEqual(userToLogin.username);
-        expect(userFromDb.password).toEqual(userToLogin.password);
-        expect(userFromDb.id).toEqual(userToLogin.id);
+        expect(userFromDbToSignIn.user.username).toEqual(userToLogin.username);
+        expect(userFromDb.id).toEqual(userFromDbToSignIn.user.id);
     })
 })

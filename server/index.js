@@ -22,7 +22,12 @@ app.post('/api/createUser', async (req, res, next) => {
 
     // create new user
     const {username, password} = user;
-    const newDbUser = await usersController.createUser(username, password);
+    const newDbUser = null;
+    try{
+        newDbUser = await usersController.createUser(username, password);
+    }catch(e){
+        return res.status(401).send(JSON.stringify(e));
+    }
 
     return res.status(200).send(newDbUser)
 });

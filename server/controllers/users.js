@@ -2,6 +2,12 @@ const helpers = require('../util/helpers');
 const usersDb = require('../database/users');
 
 async function createUser(username, password) {
+
+  const doesUserAlreadyExist = await usersDb.getUserByUsername(username);
+
+  if(doesUserAlreadyExist){
+    throw Error('Username must be unique');
+  }
   // hash password
   const hash = helpers.hashPassword(password);
 
