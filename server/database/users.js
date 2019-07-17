@@ -17,6 +17,7 @@ async function getUserByUsername(username){
     return db.users.findOne({username})
 }
 
+
 module.exports = {
     createUser,
     getAllUsers,

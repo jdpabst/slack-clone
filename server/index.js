@@ -9,7 +9,7 @@ app.use(express.static(__dirname + './../build'))
 // import controllers
 const helpers = require('./util/helpers')
 const usersController = require('./controllers/users');
-
+const groupsController = require('./controllers/groups');
 //
 //Endpoints
 //
@@ -22,7 +22,12 @@ app.post('/api/createUser', async (req, res, next) => {
 
     // create new user
     const {username, password} = user;
-    const newDbUser = await usersController.createUser(username, password);
+    const newDbUser = null;
+    try{
+        newDbUser = await usersController.createUser(username, password);
+    }catch(e){
+        return res.status(401).send(JSON.stringify(e));
+    }
 
     return res.status(200).send(newDbUser)
 });
@@ -51,21 +56,34 @@ app.post('/api/signIn', async (req, res, next) => {
 });
 
 // used when a user posts a message
-app.post('/api/createGroup', (req, res, next) => {
+app.post('/api/createGroup', async (req, res, next) => {
     console.log('create group endpoint');
 
     // user must be logged in to use this endpoint
-    const {token} = req.body;
+    const { token } = req.body;
     if (!token) return res.status(401).send('You must provide a user token');
     const userId = helpers.getUserFromToken(token);
 
-    const {group} = req.body;
+    const { group } = req.body;
     if (!group || !group.name || !group.userIds) 
         return res.status(400).send('You must provide a "group" object with name and userIds attributes')
     
     const {name, userIds} = group;
-    // TODO: create the group here by calling the controller function. 
-    // still need to create controller and db functions
+    const newDbGroup = await groupsController.createGroup(name, userIds);
+
+    return res.status(200).send(newDbGroup);
+
+})
+
+app.post('/api/getGroupsForUser', async (req, res, next) => {
+    console.log('getGroupsForUser endpoint');
+    const { token } = req.body;
+    if(!token) return res.status(401).send('You must provide a user token');
+    const userId = helpers.getUserFromToken(token);
+
+    const groups = await groupsController.getUserGroups(userId);
+
+    return res.status(200).send(groups);
 })
 
 
