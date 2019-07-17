@@ -2,8 +2,7 @@ const usersController = require('../users');
 const usersDb = require('../../database/users');
 
 describe('users controllers tests', () => {
-    // SHOULD RESET THE DATA AFTER TESTING - SEE UNIT_TESTING_AFTERNOON PROJECT FOR MORE INFO afterEach(() => {  
-    // })
+
     test('should create new user properly', async () => {
         const random = Math.random();
         const newUserFromFrontEnd = {
