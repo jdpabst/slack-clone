@@ -10,6 +10,7 @@ app.use(express.static(__dirname + './../build'))
 const helpers = require('./util/helpers')
 const usersController = require('./controllers/users');
 const groupsController = require('./controllers/groups');
+const messageController = require('./controllers/messages');
 //
 //Endpoints
 //
@@ -84,6 +85,17 @@ app.post('/api/getGroupsForUser', async (req, res, next) => {
     const groups = await groupsController.getUserGroups(userId);
 
     return res.status(200).send(groups);
+})
+
+app.post('/api/postMessageToGroup', async (req, res, next) => {
+    console.log('postMessageToGroup endpoint');
+    const { token, messageText, groupid } = req.body;
+    if(!token) return res.status(401).send('You must provide a user token');
+    const userId = helpers.getUserFromToken(token);
+
+    const message = await messageController.postMessageToGroup(messageText, groupid, userId);
+
+    return res.status(200).send(message);
 })
 
 
